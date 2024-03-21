@@ -1,0 +1,66 @@
+"""
+projekt_2.py: druhý projekt do Engeto Online Python Akademie
+
+author: Anezka Kinclova
+email: kanciobora@centrum.com
+discord: !pdb1714
+"""
+
+import random
+import time
+
+def generate_secret_number():
+    digits = list(range(1, 10))  # číslice od 1 do 9
+    random.shuffle(digits)
+    return ''.join(map(str, digits[:4]))  # vrátí prvních 4 číslic jako řetězec
+
+def validate_guess(guess):
+    if len(guess) != 4 or not guess.isdigit():
+        return False
+    if len(set(guess)) < 4 or guess[0] == '0':
+        return False
+    return True
+
+def evaluate_guess(secret, guess):
+    bulls = sum(1 for s, g in zip(secret, guess) if s == g)
+    cows = sum(1 for s in secret if s in guess) - bulls
+    return bulls, cows
+
+def main():
+    print("""
+        Hi there!
+        -----------------------------------------------
+        I've generated a random 4 digit number for you.
+        Let's play a bulls and cows game.")
+        -----------------------------------------------
+        Enter a number:
+        -----------------------------------------------
+    """)
+
+    
+secret_number = generate_secret_number()
+guesses = 0
+
+start_time = time.time()
+
+while True:
+    guess = input()
+    print(">>>", guess)  # Přidává označení před hádané číslo
+
+    if not validate_guess(guess):
+        print("Invalid guess. Please enter a 4 digit number with unique non-zero digits.")
+        continue
+
+    bulls, cows = evaluate_guess(secret_number, guess)
+
+    if bulls == 4:
+        print(f"Correct, you've guessed the right number in {guesses+1} guesses!")
+        break
+    else:
+        print(f"{bulls} {'bull' if bulls == 1 else 'bulls'}, {cows} {'cow' if cows == 1 else 'cows'}")
+        print("-----------------------------------------------")
+
+    guesses += 1
+
+if __name__ == "__main__":
+    main()
